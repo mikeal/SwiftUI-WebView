@@ -2,15 +2,15 @@ import SwiftUI
 import Combine
 import WebKit
 
-public class WebViewStore: BindableObject {
+public class WebViewStore: ObservableObject {
   public let webView: WKWebView
-  public let didChange = PassthroughSubject<Void, Never>()
+  public let objectWillChange = PassthroughSubject<Void, Never>()
   
   public init(webView: WKWebView = WKWebView()) {
     self.webView = webView
     
     func subscriber<Value>(for keyPath: KeyPath<WKWebView, Value>) -> AnyCancellable {
-      return AnyCancellable(webView.publisher(for: keyPath).sink { _ in self.didChange.send() })
+      return AnyCancellable(webView.publisher(for: keyPath).sink { _ in self.objectWillChange.send() })
     }
     // Setup observers for all KVO compliant properties
     observers = [
